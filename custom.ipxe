@@ -4,23 +4,33 @@
 :custom_menu
 menu Custom Boot Options
 item --gap -- Custom Options:
-item custom_option1 FCOS Worker
-item custom_option2 FCOS Control
+item fcos_worker FCOS Worker
+item fcos_control FCOS Control
 item --gap -- Return:
 item return Return to Main Menu
 choose --default return --timeout 10000 custom_target && goto ${custom_target}
 
-:custom_option1
-# Add your custom boot logic here
+:fcos_worker
 echo Booting FCOS Worker Config...
-# Add your boot commands
-chain fcos_worker.ipxe
+set STREAM stable
+set VERSION 42.20250929.3.0
+set INSTALLDEV /dev/sda
+set CONFIGURL https://example.com/worker.ign
+set BASEURL https://builds.coreos.fedoraproject.org/prod/streams/${STREAM}/builds/${VERSION}/x86_64
+kernel ${BASEURL}/fedora-coreos-${VERSION}-live-kernel.x86_64 initrd=main coreos.live.rootfs_url=${BASEURL}/fedora-coreos-${VERSION}-live-rootfs.x86_64.img coreos.inst.install_dev=${INSTALLDEV} coreos.inst.ignition_url=${CONFIGURL}
+initrd --name main ${BASEURL}/fedora-coreos-${VERSION}-live-initramfs.x86_64.img
+boot
 
-:custom_option2
-# Add your custom boot logic here
+:fcos_control
 echo Booting FCOS Control Config...
-# Add your boot commands
-chain fcos_control.ipxe
+set STREAM stable
+set VERSION 42.20250929.3.0
+set INSTALLDEV /dev/sda
+set CONFIGURL https://example.com/control.ign
+set BASEURL https://builds.coreos.fedoraproject.org/prod/streams/${STREAM}/builds/${VERSION}/x86_64
+kernel ${BASEURL}/fedora-coreos-${VERSION}-live-kernel.x86_64 initrd=main coreos.live.rootfs_url=${BASEURL}/fedora-coreos-${VERSION}-live-rootfs.x86_64.img coreos.inst.install_dev=${INSTALLDEV} coreos.inst.ignition_url=${CONFIGURL}
+initrd --name main ${BASEURL}/fedora-coreos-${VERSION}-live-initramfs.x86_64.img
+boot
 
 :return
 exit
