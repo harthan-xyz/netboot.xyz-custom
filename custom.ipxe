@@ -1,12 +1,26 @@
 #!ipxe
-###
-### netboot.xyz-custom menu
-###
+######## CUSTOM MENU ########
 
-:start
-echo Hello world!
-sleep 10
-goto custom_exit
+:custom_menu
+menu Custom Boot Options
+item --gap -- Custom Options:
+item custom_option1 FCOS Worker
+item custom_option2 FCOS Control
+item --gap -- Return:
+item return Return to Main Menu
+choose --default return --timeout 10000 custom_target && goto ${custom_target}
 
-:custom_exit
-exit 0
+:custom_option1
+# Add your custom boot logic here
+echo Booting FCOS Worker Config...
+# Add your boot commands
+chain fcos_worker.ipxe
+
+:custom_option2
+# Add your custom boot logic here
+echo Booting FCOS Control Config...
+# Add your boot commands
+chain fcos_control.ipxe
+
+:return
+exit
